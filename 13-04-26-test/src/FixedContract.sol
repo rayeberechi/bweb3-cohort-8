@@ -4,6 +4,15 @@ pragma solidity ^0.8.28;
 contract FixedContract {
     mapping(address => uint256) public balances;
 
+    bool private locked;
+
+    modifier noReentrant() {
+        require(!locked, "No re-entrancy");
+        locked = true;
+        _;
+        locked = false;
+    }
+
     function deposit() public payable {
         balances[msg.sender] += msg.value;
     }
